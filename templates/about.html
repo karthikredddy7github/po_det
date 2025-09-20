@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About | PoultryDetect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: url('/static/farm.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="text-gray-800 font-sans min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="flex justify-between items-center px-8 py-5 bg-white/70 backdrop-blur border-b shadow sticky top-0 z-50">
+    <div class="text-2xl font-extrabold text-green-700 tracking-wide">🐔 PoultryDetect</div>
+    <div class="space-x-6 text-sm uppercase tracking-wider">
+      <a href="{{ url_for('index') }}" class="hover:text-green-600">Home</a>
+      <a href="{{ url_for('about') }}" class="text-green-700 font-bold underline">About</a>
+      <a href="{{ url_for('contact') }}" class="hover:text-green-600">Contact</a>
+      <a href="{{ url_for('training') }}" class="hover:text-green-600">🧭Discover</a>
+    </div>
+  </nav>
+
+  <!-- About Section -->
+  <section class="max-w-3xl mx-auto mt-16 px-6">
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-lg">
+      <h1 class="text-4xl font-bold text-green-700 mb-4 text-center">About PoultryDetect</h1>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
+        <strong>PoultryDetect</strong> is an AI-powered web application crafted to assist poultry farmers, veterinarians, and students in early disease detection. Our model classifies common diseases such as <strong>Coccidiosis</strong>, <strong>Newcastle Disease</strong>, and <strong>Salmonella</strong> from poultry images, reducing the time taken to respond to outbreaks.
+      </p>
+
+      <div class="bg-white/70 rounded-xl p-6 shadow">
+        <h2 class="text-xl font-semibold text-green-600 mb-2">What Makes Us Unique?</h2>
+        <ul class="list-disc list-inside text-gray-800 space-y-2">
+          <li>🌿 Real-time AI predictions based on deep learning</li>
+          <li>📸 Intuitive image-based diagnosis for easy use</li>
+          <li>📚 Educational resources for veterinary training</li>
+          <li>🌐 Access to curated research literature links</li>
+          <li>🚜 Built for both academic and rural field use</li>
+        </ul>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="{{ url_for('index') }}" class="inline-block text-green-600 font-medium hover:underline">← Back to Home</a>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

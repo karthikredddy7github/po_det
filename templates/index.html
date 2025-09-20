@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PoultryDetect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      background: url('/static/farm.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 1rem;
+      border: 1px solid rgba(0, 128, 0, 0.1);
+    }
+
+    .hen {
+      position: fixed;
+      bottom: 20px;
+      left: -150px;
+      width: 100px;
+      animation: walkHen 20s linear infinite;
+      filter: drop-shadow(0 0 6px #22c55e) drop-shadow(0 0 3px #fff);
+      z-index: 50;
+    }
+
+    @keyframes walkHen {
+      0% { left: -150px; transform: scaleX(1); }
+      50% { left: 100vw; transform: scaleX(1); }
+      50.01% { transform: scaleX(-1); }
+      100% { left: -150px; transform: scaleX(-1); }
+    }
+  </style>
+</head>
+
+<body class="text-gray-800 font-sans min-h-screen relative">
+
+  <!-- 🐔 Hen Animation -->
+  <img src="{{ url_for('static', filename='hen.jpeg') }}" alt="Hen" class="hen">
+
+  <!-- 🌐 Navigation -->
+  <nav class="glass flex justify-between items-center px-8 py-5 mx-4 mt-4 shadow sticky top-0 z-50">
+    <div class="text-2xl font-extrabold text-green-700 tracking-wide">🐔 PoultryDetect</div>
+    <div class="space-x-6 text-sm uppercase tracking-wider text-green-700">
+      <a href="{{ url_for('index') }}" class="text-green-700 underline font-bold">Home</a>
+      <a href="{{ url_for('about') }}" class="hover:text-green-600">About</a>
+      <a href="{{ url_for('contact') }}" class="hover:text-green-600">Contact</a>
+      <a href="{{ url_for('training') }}" class="hover:text-green-600">🧭Discover</a>
+    </div>
+  </nav>
+
+  <!-- 🧠 Main Content -->
+  <main class="flex flex-col items-center text-center px-4 py-12 z-10 relative">
+    <div class="glass p-10 max-w-xl mx-auto w-full text-center shadow-xl">
+
+      <!-- Optional Animation (can be removed if not needed) -->
+      <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_3vbOcw.json"
+                     background="transparent" speed="1"
+                     style="width: 120px; height: 120px; margin: auto;" loop autoplay>
+      </lottie-player>
+
+      <!-- 🏷️ Title -->
+      <h1 class="text-4xl font-bold text-green-700 mt-4 mb-2">Poultry Disease Identifier</h1>
+      <p class="text-gray-600 mb-6">
+        Upload a poultry image to get instant disease classification and expert suggestions.
+      </p>
+
+      <!-- 🔍 Prediction Result -->
+      {% if prediction %}
+      <div class="glass p-4 mb-6 border border-green-500 rounded-xl text-green-700 shadow-md">
+        <p class="text-lg font-semibold">🧠 AI Prediction:</p>
+        <p class="text-2xl font-bold mt-2">{{ prediction }}</p>
+        <img src="{{ img_path }}" class="mt-4 w-64 h-auto rounded-xl mx-auto border border-green-300 shadow-sm">
+      </div>
+      {% endif %}
+
+      <!-- 📤 Upload Form -->
+      <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-left">
+        <label class="block text-sm font-medium text-green-700">Choose a Poultry Image:</label>
+        <input type="file" name="file" required
+               class="block w-full text-sm text-gray-800 bg-white border border-green-200 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 transition">
+        <button type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold text-lg transition shadow-md">
+          🔍 Upload & Predict
+        </button>
+      </form>
+
+    </div>
+  </main>
+
+</body>
+</html>

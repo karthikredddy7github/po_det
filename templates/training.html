@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research & Training</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      background: url('/static/farm.jpeg') no-repeat center center fixed;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="text-gray-800 font-sans min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="flex justify-between items-center px-8 py-5 bg-white/70 backdrop-blur border-b shadow sticky top-0 z-50">
+    <div class="text-2xl font-extrabold text-green-700 tracking-wide">🐔 PoultryDetect</div>
+    <div class="space-x-6 text-sm uppercase tracking-wider">
+      <a href="{{ url_for('index') }}" class="hover:text-green-600">Home</a>
+      <a href="{{ url_for('about') }}" class="hover:text-green-600">About</a>
+      <a href="{{ url_for('contact') }}" class="hover:text-green-600">Contact</a>
+      <a href="{{ url_for('training') }}" class="text-green-700 font-bold underline">🧭Discover</a>
+    </div>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="text-center py-12">
+    <div class="bg-white/70 backdrop-blur rounded-xl p-6 inline-block shadow-lg">
+     
+      <h1 class="text-4xl font-bold text-green-700 mt-4">Veterinary Research & Training</h1>
+      <p class="mt-4 text-gray-700 max-w-2xl mx-auto leading-relaxed">
+        Engage with real-world case studies, learn AI-assisted diagnosis, and research poultry diseases such as <strong>Salmonella</strong>, <strong>Newcastle Disease</strong>, and <strong>Coccidiosis</strong>.
+      </p>
+    </div>
+  </header>
+
+  <!-- Disease Research Cards -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-6 pb-16">
+    <!-- Cards: Same as before with glass styling -->
+    {% for disease in [
+      {
+        'icon': '🦠',
+        'name': 'Coccidiosis',
+        'symptoms': 'Bloody droppings, weight loss',
+        'treatment': 'Amprolium, Sulfa drugs',
+        'management': 'Dry litter, medicated feed',
+        'link': 'Coccidiosis+in+Poultry'
+      },
+      {
+        'icon': '💉',
+        'name': 'Newcastle Disease',
+        'symptoms': 'Coughing, twisted neck',
+        'treatment': 'Supportive care',
+        'management': 'Vaccination, biosecurity',
+        'link': 'Newcastle+Disease+in+Poultry'
+      },
+      {
+        'icon': '🧫',
+        'name': 'Salmonella',
+        'symptoms': 'Diarrhea, weakness',
+        'treatment': 'Antibiotics (vet guided)',
+        'management': 'Clean water/feed, rodent control',
+        'link': 'Salmonella+in+Poultry'
+      }
+    ] %}
+    <div class="bg-white/70 backdrop-blur-md border border-green-200 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition transform hover:scale-105">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-green-600 text-xl">{{ disease.icon }}</span>
+        <h2 class="text-xl font-bold text-green-700">{{ disease.name }}</h2>
+      </div>
+      <ul class="text-gray-800 text-sm leading-relaxed space-y-1">
+        <li><strong>Symptoms:</strong> {{ disease.symptoms }}</li>
+        <li><strong>Treatment:</strong> {{ disease.treatment }}</li>
+        <li><strong>Management:</strong> {{ disease.management }}</li>
+      </ul>
+      <a href="https://scholar.google.com/scholar?q={{ disease.link }}" target="_blank" class="block text-green-600 mt-4 font-medium hover:underline">🔍 Search Research</a>
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- Farmer Research Journey Section -->
+  <section class="bg-white/80 backdrop-blur-md rounded-xl shadow-md max-w-4xl mx-auto px-6 py-10 mb-16">
+    <div class="flex flex-col items-center text-center mb-10">
+     
+      <h3 class="text-2xl font-bold text-green-800 mt-4">Farmer Research Journey 🌾</h3>
+    </div>
+    <div class="relative border-l-4 border-green-600 space-y-10 pl-6">
+      <div class="relative">
+        <div class="absolute w-4 h-4 bg-green-600 rounded-full -left-2 top-1"></div>
+        <h4 class="text-lg font-semibold text-green-700">📌 Step 1: Learn Symptoms</h4>
+        <p class="text-sm text-gray-700">Understand common poultry disease indicators and early signs.</p>
+      </div>
+      <div class="relative">
+        <div class="absolute w-4 h-4 bg-green-600 rounded-full -left-2 top-1"></div>
+        <h4 class="text-lg font-semibold text-green-700">📷 Step 2: Upload Images</h4>
+        <p class="text-sm text-gray-700">Capture and upload poultry images to the app for diagnosis.</p>
+      </div>
+      <div class="relative">
+        <div class="absolute w-4 h-4 bg-green-600 rounded-full -left-2 top-1"></div>
+        <h4 class="text-lg font-semibold text-green-700">🔍 Step 3: Analyze Results</h4>
+        <p class="text-sm text-gray-700">Review AI predictions and understand treatment suggestions.</p>
+      </div>
+      <div class="relative">
+        <div class="absolute w-4 h-4 bg-green-600 rounded-full -left-2 top-1"></div>
+        <h4 class="text-lg font-semibold text-green-700">📚 Step 4: Conduct Research</h4>
+        <p class="text-sm text-gray-700">Explore linked scientific studies, veterinary guides, and improve practices.</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
