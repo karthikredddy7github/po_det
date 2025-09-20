@@ -1,27 +1,57 @@
-from flask import Flask, render_template, request
-from keras.models import load_model
-from keras.preprocessing import image
-import numpy as np
+# Modified app.py for Vercel deployment
+
+from flask import Flask, render_template, request, jsonify
 import os
-from werkzeug.utils import secure_filename
+import numpy as np
+from PIL import Image
+import io
+import base64
+import tempfile
 
 app = Flask(__name__)
-model = load_model("healthy_vs_rotten.h5")
-classes = ['Coccidiosis', 'Healthy', 'Salmonella', 'New Castle Disease']
-UPLOAD_FOLDER = 'static/uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Prediction function
-def predict(img_path):
+# Initialize model as None - will load when needed
+model = None
+classes = ['Coccidiosis', 'Healthy', 'Salmonella', 'New Castle Disease']
+
+def load_model():
+    """Load model only when needed to reduce cold start time"""
+    global model
+    if model is None:
+        try:
+            # Import tensorflow here to reduce initial load time
+            import tensorflow as tf
+            model = tf.keras.models.load_model("healthy_vs_rotten.h5")
+            print("Model loaded successfully")
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            model = False
+    return model
+
+def predict_image(image_data):
+    """Make prediction from image data"""
     try:
-        img = image.load_img(img_path, target_size=(224, 224))
-        arr = image.img_to_array(img) / 255.0
+        # Load model if not already loaded
+        current_model = load_model()
+        if not current_model:
+            return "Model loading error"
+        
+        # Process image
+        img = Image.open(io.BytesIO(image_data))
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        img = img.resize((224, 224))
+        arr = np.array(img) / 255.0
         arr = np.expand_dims(arr, axis=0)
-        pred = model.predict(arr)[0]
+        
+        # Make prediction
+        pred = current_model.predict(arr)[0]
         return classes[np.argmax(pred)]
+    
     except Exception as e:
-        print("Error in prediction:", e)
-        return "Invalid image"
+        print(f"Prediction error: {e}")
+        return f"Prediction error: {str(e)}"
 
 # Routes
 @app.route('/')
@@ -42,21 +72,54 @@ def contact():
 
 @app.route('/predict', methods=['POST'])
 def upload():
-    file = request.files.get('file')
-    if not file:
-        return render_template('index.html', prediction="No file uploaded")
+    """Handle file upload and prediction"""
+    try:
+        file = request.files.get('file')
+        if not file or file.filename == '':
+            return render_template('index.html', prediction="No file uploaded")
 
-    filename = secure_filename(file.filename)
-    if filename == "":
-        return render_template('index.html', prediction="Invalid file")
+        # Read file data
+        file_data = file.read()
+        if len(file_data) == 0:
+            return render_template('index.html', prediction="Empty file")
 
-    path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(path)
+        # Make prediction
+        prediction = predict_image(file_data)
+        
+        # Convert image to base64 for display
+        img_base64 = base64.b64encode(file_data).decode('utf-8')
+        img_src = f"data:image/jpeg;base64,{img_base64}"
 
-    pred = predict(path)
-    img_path = '/' + path.replace('\\', '/')  # To ensure browser loads image
+        return render_template('index.html', 
+                             prediction=prediction, 
+                             img_path=img_src)
+    
+    except Exception as e:
+        print(f"Upload error: {e}")
+        return render_template('index.html', 
+                             prediction=f"Error: {str(e)}")
 
-    return render_template('index.html', prediction=pred, img_path=img_path)
+@app.route('/api/predict', methods=['POST'])
+def predict_api():
+    """API endpoint for predictions"""
+    try:
+        data = request.get_json()
+        if not data or 'image' not in data:
+            return jsonify({"error": "No image data provided"}), 400
+
+        # Decode base64 image
+        image_data = base64.b64decode(data['image'])
+        prediction = predict_image(image_data)
+        
+        return jsonify({"prediction": prediction})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Health check endpoint
+@app.route('/api/health')
+def health():
+    return jsonify({"status": "healthy", "model_loaded": model is not None})
 
 if __name__ == '__main__':
     app.run(debug=True)
